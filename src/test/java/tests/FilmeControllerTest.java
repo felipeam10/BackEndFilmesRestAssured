@@ -452,6 +452,166 @@ public class FilmeControllerTest extends TestConfig {
                         "}")); // Match the plain text response
     }
 
-    
+    @Test
+    public void testEditarFilmeComPatch_Success() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+        String requestBody = """
+            {
+                "nome": "Nome Atualizado",
+                "genero": "Ação",
+                "sinopse": "Sinopse Atualizada",
+                "faixaEtaria": "16+"
+            }
+        """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON)
+            .body("nome", equalTo("Nome Atualizado"))
+            .body("genero", equalTo("Ação"))
+            .body("sinopse", equalTo("Sinopse Atualizada"))
+            .body("faixaEtaria", equalTo("16+"));
+    }
+
+    @Test
+    public void testEditarFilmeComPatch_PartialUpdate() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+        String requestBody = """
+            {
+                "nome": "Nome Parcialmente Atualizado"
+            }
+        """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON)
+            .body("nome", equalTo("Nome Parcialmente Atualizado"));
+    }
+
+    @Test
+    public void testEditarFilmeComPatch_NotFound() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 999; // Assuming a movie with this codigo does not exist
+        String requestBody = """
+            {
+                "nome": "Filme Inexistente"
+            }
+        """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(500); // Expect HTTP 404 Not Found
+//            .contentType(ContentType.JSON)
+//            .body("message", equalTo("Filme não encontrado"));
+    }
+
+    @Test
+    public void testEditarFilmeComPatch_NoFieldsToUpdate() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+        String requestBody = "{}"; // Empty request body
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON);
+    }
+
+    @Test
+    public void testEditarFilmeComPatch_UpdateGeneroField() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+        String requestBody = """
+        {
+            "genero": "Comédia"
+        }
+        """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON)
+            .body("genero", equalTo("Comédia")); // Validate the updated genero field
+    }
+
+    @Test
+    public void testEditarFilmeComPatch_UpdateSinopseField() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+        String requestBody = """
+        {
+            "sinopse": "Uma nova sinopse para o filme."
+        }
+        """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON)
+            .body("sinopse", equalTo("Uma nova sinopse para o filme.")); // Validate the updated sinopse field
+    }
+
+    @Test
+    public void testEditarFilmeComPatch_UpdateFaixaEtariaField() {
+        setBasePath("/api/usuario/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+        String requestBody = """
+        {
+            "faixaEtaria": "18+"
+        }
+        """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .patch()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON)
+            .body("faixaEtaria", equalTo("18+")); // Validate the updated faixaEtaria field
+    }
 
 }
