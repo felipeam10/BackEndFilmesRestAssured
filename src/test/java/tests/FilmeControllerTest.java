@@ -243,6 +243,215 @@ public class FilmeControllerTest extends TestConfig {
             .body("message", equalTo("Sinopse é obrigatório!")); // Validate the error message
     }
 
+    @Test
+    public void testDeletarFilmePorId_Success() {
+        // Assuming a movie with codigo 1 exists in the database
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 10;
+
+        given()
+            .pathParam("codigo", codigo)
+        .when()
+            .delete()
+        .then()
+            .statusCode(200); // Expect HTTP 204 No Content
+    }
+
+    @Test
+    public void testDeletarFilmePorId_NotFound() {
+        // Assuming a movie with codigo 999 does not exist in the database
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 999;
+
+        given()
+            .pathParam("codigo", codigo)
+        .when()
+            .delete()
+        .then()
+            .statusCode(404) // Expect HTTP 404 Not Found
+            .contentType(ContentType.JSON) // Expect JSON response
+            .body("error", equalTo("Not Found")); // Validate the error message
+    }
+
+    @Test
+    public void testEditarFilme_Success() {
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+
+        String requestBody = """
+                {
+                    "codigo": 1,
+                    "nome": "Novo Nome do Filme",
+                    "sinopse": "Nova sinopse do filme",
+                    "genero": "Ação",
+                    "faixaEtaria": "16+"
+                }
+                """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .put()
+        .then()
+            .statusCode(200) // Expect HTTP 200 OK
+            .contentType(ContentType.JSON)
+            .body("nome", equalTo("Novo Nome do Filme"))
+            .body("sinopse", equalTo("Nova sinopse do filme"))
+            .body("genero", equalTo("Ação"))
+            .body("faixaEtaria", equalTo("16+"));
+    }
+
+    @Test
+    public void testEditarFilme_NotFound() {
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 999; // Assuming a movie with this codigo does not exist
+
+        String requestBody = """
+                {
+                    "codigo": 999,
+                    "nome": "Filme Inexistente",
+                    "sinopse": "Sinopse inexistente",
+                    "genero": "Drama",
+                    "faixaEtaria": "18+"
+                }
+                """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .put()
+        .then()
+            .statusCode(404) // Expect HTTP 404 Not Found
+            .contentType("text/plain;charset=UTF-8") // Match the actual content type
+            .body(equalTo("{\n" +
+                    "    \"message\": \"Filme não encontrado\",\n" +
+                    "}")); // Match the plain text response
+    }
+
+    @Test
+    public void testEditarFilme_MissingFaixaEtaria() {
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+
+        String requestBody = """
+                {
+                    "codigo": 1,
+                    "nome": "Filme Sem Faixa Etária",
+                    "sinopse": "Sinopse do filme",
+                    "genero": "Comédia"
+                }
+                """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .put()
+        .then()
+            .statusCode(400) // Expect HTTP 400 Bad Request
+                .contentType("text/plain;charset=UTF-8") // Match the actual content type
+                .body(equalTo("{\n" +
+                        "    \"message\": \"Faixa etária é obrigatória\",\n" +
+                        "}")); // Match the plain text response
+    }
+
+    @Test
+    public void testEditarFilme_MissingGenero() {
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+
+        String requestBody = """
+                {
+                    "codigo": 1,
+                    "nome": "Filme Sem Gênero",
+                    "sinopse": "Sinopse do filme",
+                    "faixaEtaria": "12+"
+                }
+                """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .put()
+        .then()
+            .statusCode(400) // Expect HTTP 400 Bad Request
+                .contentType("text/plain;charset=UTF-8") // Match the actual content type
+                .body(equalTo("{\n" +
+                        "    \"message\": \"Genêro é obrigatório\",\n" +
+                        "}")); // Match the plain text response
+    }
+
+    @Test
+    public void testEditarFilme_MissingNome() {
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+
+        String requestBody = """
+                {
+                    "codigo": 1,
+                    "sinopse": "Sinopse do filme",
+                    "genero": "Terror",
+                    "faixaEtaria": "18+"
+                }
+                """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .put()
+        .then()
+            .statusCode(400) // Expect HTTP 400 Bad Request
+                .contentType("text/plain;charset=UTF-8") // Match the actual content type
+                .body(equalTo("{\n" +
+                        "    \"message\": \"Nome é obrigatório\",\n" +
+                        "}")); // Match the plain text response
+    }
+
+    @Test
+    public void testEditarFilme_MissingSinopse() {
+        setBasePath("/filme/{codigo}");
+
+        int codigo = 1; // Assuming a movie with this codigo exists in the database
+
+        String requestBody = """
+                {
+                    "codigo": 1,
+                    "nome": "Filme Sem Sinopse",
+                    "genero": "Aventura",
+                    "faixaEtaria": "10+"
+                }
+                """;
+
+        given()
+            .pathParam("codigo", codigo)
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .put()
+        .then()
+            .statusCode(400) // Expect HTTP 400 Bad Request
+                .contentType("text/plain;charset=UTF-8") // Match the actual content type
+                .body(equalTo("{\n" +
+                        "    \"message\": \"Sinopse é obrigatório\",\n" +
+                        "}")); // Match the plain text response
+    }
+
     
 
 }
