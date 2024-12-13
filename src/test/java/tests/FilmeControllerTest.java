@@ -1,7 +1,6 @@
 package tests;
 
 import config.TestConfig;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class FilmeApiTest extends TestConfig {
+public class FilmeControllerTest extends TestConfig {
 
     @AfterEach
     public void tearDown() {
@@ -120,7 +119,7 @@ public class FilmeApiTest extends TestConfig {
 
         String filmeJson = """
             {
-                "codigo": 10,
+                "codigo": 1,
                 "faixaEtaria": "12",
                 "genero": "Ação",
                 "nome": "Filme de Ação",
@@ -243,4 +242,7 @@ public class FilmeApiTest extends TestConfig {
             .contentType(ContentType.JSON) // Expect JSON response
             .body("message", equalTo("Sinopse é obrigatório!")); // Validate the error message
     }
+
+    
+
 }
