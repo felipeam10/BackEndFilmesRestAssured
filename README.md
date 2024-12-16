@@ -1,6 +1,25 @@
-# BackEndFilmesRestAssured
+<div align="left">
+  <h1><strong>BackEndFilmesRestAssured</strong></h1>
+</div>
+
+## Index
+
+- [About](#about)
+- [Support Material](#support-material)
+- [How to execute the project](#como-executar-o-projeto)
+- [Used Technologies](#tecnologias-utilizadas)
+- [How to contribute](#como-contribuir)
+
+## About
 
 This project is a demo application built with **Spring Boot** for backend development and **Rest-Assured** for API testing. It is designed to help you understand how to set up and test a Spring Boot application using Rest-Assured and JUnit 5.
+
+This project tests the project: https://gitlab.com/brunobatista25/BackEndFilmes
+
+I recommend that you read the BackEndFilmes project ````README.md```` very carefully.
+
+For it to run, you need to have Java 11 initially and then Docker installed on your operating system to test the WiremockController class.
+
 
 ---
 
@@ -39,21 +58,7 @@ Follow these steps to set up the project on your local machine:
    git clone https://github.com/your-username/BackEndFilmesRestAssured.git
    cd BackEndFilmesRestAssured
 
-<div align="left">
-  <h1><strong>Send Book Email using Spring Batch</strong></h1>
-</div>
 
-## Index
-
-- [About](#about)
-- [Support Material](#support-material)
-- [How to execute the project](#como-executar-o-projeto)
-- [Used Technologies](#tecnologias-utilizadas)
-- [How to contribute](#como-contribuir)
-
-## About
-
-Summary
 In summary, this project is a Spring Batch application that periodically checks for users with book loans nearing their return date and sends them email notifications using SendGrid. The job is scheduled using Quartz, and the batch job consists of reading user data, processing it to create email notifications, and sending those emails.
 
 ## Support Material
