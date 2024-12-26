@@ -7,7 +7,7 @@ public class TestConfig {
 
     @BeforeAll
     public static void setup() {
-        RestAssured.baseURI = "http://localhost:8082"; // Replace with the actual base URL of the external project
+        RestAssured.baseURI = "http://localhost:8080"; // Replace with the actual base URL of the external project
     }
 
     public static void setBasePath(String basePath) {
