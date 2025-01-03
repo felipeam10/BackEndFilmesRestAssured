@@ -1,5 +1,6 @@
 package tests;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import support.enums.Endpoint;
@@ -7,6 +8,7 @@ import support.utils.RestAssuredConfig;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WiremockControllerTest {
 
@@ -18,39 +20,38 @@ public class WiremockControllerTest {
 
     @Test
     public void testConsultarIdFilmeExterno() {
-        int codigo = 1;
 
-        given()
-            .pathParam("codigo", codigo)
-        .when()
-            .get(Endpoint.FILME_EXTERNO.getPath())
-        .then()
-            .statusCode(200)
-            .body(equalTo("{\"id\":\"12345\"}")); // Match the plain text response
+        Response response = given()
+                .pathParam("codigo", 1)
+                .when()
+                .get(Endpoint.FILME_EXTERNO.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals("{\"id\":\"12345\"}", response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
     public void testValidarHeaderWithValidHeader() {
-        String validHeader = "12345678";
 
-        given()
-            .header("optional-header", validHeader)
+        Response response =
+       given()
+            .header("optional-header", "12345678")
         .when()
-            .get(Endpoint.VALIDAR_HEADER.getPath())
-        .then()
-                .statusCode(200)
-                .body(equalTo("{\"mensagem\":\"Header válido\"}"));// Replace with the actual expected response body
+            .get(Endpoint.VALIDAR_HEADER.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals("{\"mensagem\":\"Header válido\"}", response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
     public void testValidarHeaderWithInvalidHeader() {
-        String invalidHeader = "invalidHeader";
 
+        Response response =
         given()
-            .header("optional-header", invalidHeader)
+            .header("optional-header", "invalidHeader")
         .when()
-            .get(Endpoint.VALIDAR_HEADER.getPath())
-        .then()
-            .statusCode(404);
+            .get(Endpoint.VALIDAR_HEADER.getPath());
+
+        assertEquals(404, response.getStatusCode(), "Expected HTTP 404 Not Found");
     }
 }

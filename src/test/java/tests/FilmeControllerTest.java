@@ -9,7 +9,6 @@ import support.utils.RestAssuredConfig;
 import support.enums.Endpoint;
 
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import io.restassured.response.*;
 
@@ -250,18 +249,20 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.not.found");
 
+        Response response =
         given()
             .pathParam("codigo", 999)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put(Endpoint.FILME.getPath())
-        .then()
-            .statusCode(404) // Expect HTTP 404 Not Found
-            .contentType("text/plain;charset=UTF-8") // Match the actual content type
-            .body(equalTo("{\n" +
-                    "    \"message\": \"Filme não encontrado\",\n" +
-                    "}")); // Match the plain text response
+            .put(Endpoint.FILME.getPath());
+
+        assertEquals(404, response.getStatusCode(), "Expected HTTP 404 Not Found");
+        assertEquals("text/plain;charset=UTF-8", response.getContentType(), "Content type mismatch");
+        String expectedBody = "{\n" +
+                "    \"message\": \"Filme não encontrado\",\n" +
+                "}";
+        assertEquals(expectedBody, response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
@@ -269,18 +270,20 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.faixa.etaria");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put(Endpoint.FILME.getPath())
-        .then()
-            .statusCode(400) // Expect HTTP 400 Bad Request
-                .contentType("text/plain;charset=UTF-8") // Match the actual content type
-                .body(equalTo("{\n" +
-                        "    \"message\": \"Faixa etária é obrigatória\",\n" +
-                        "}")); // Match the plain text response
+            .put(Endpoint.FILME.getPath());
+
+        assertEquals(400, response.getStatusCode(), "Expected HTTP 400 Bad Request");
+        assertEquals("text/plain;charset=UTF-8", response.getContentType(), "Content type mismatch");
+        String expectedBody = "{\n" +
+                "    \"message\": \"Faixa etária é obrigatória\",\n" +
+                "}";
+        assertEquals(expectedBody, response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
@@ -288,18 +291,20 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.genero");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put(Endpoint.FILME.getPath())
-        .then()
-            .statusCode(400) // Expect HTTP 400 Bad Request
-                .contentType("text/plain;charset=UTF-8") // Match the actual content type
-                .body(equalTo("{\n" +
-                        "    \"message\": \"Genêro é obrigatório\",\n" +
-                        "}")); // Match the plain text response
+            .put(Endpoint.FILME.getPath());
+
+        assertEquals(400, response.getStatusCode(), "Expected HTTP 400 Bad Request");
+        assertEquals("text/plain;charset=UTF-8", response.getContentType(), "Content type mismatch");
+        String expectedBody = "{\n" +
+                "    \"message\": \"Genêro é obrigatório\",\n" +
+                "}";
+        assertEquals(expectedBody, response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
@@ -307,18 +312,20 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.nome");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put(Endpoint.FILME.getPath())
-        .then()
-            .statusCode(400) // Expect HTTP 400 Bad Request
-                .contentType("text/plain;charset=UTF-8") // Match the actual content type
-                .body(equalTo("{\n" +
-                        "    \"message\": \"Nome é obrigatório\",\n" +
-                        "}")); // Match the plain text response
+            .put(Endpoint.FILME.getPath());
+
+        assertEquals(400, response.getStatusCode(), "Expected HTTP 400 Bad Request");
+        assertEquals("text/plain;charset=UTF-8", response.getContentType(), "Content type mismatch");
+        String expectedBody = "{\n" +
+                "    \"message\": \"Nome é obrigatório\",\n" +
+                "}";
+        assertEquals(expectedBody, response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
@@ -326,18 +333,20 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.sinopse");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put(Endpoint.FILME.getPath())
-        .then()
-            .statusCode(400) // Expect HTTP 400 Bad Request
-                .contentType("text/plain;charset=UTF-8") // Match the actual content type
-                .body(equalTo("{\n" +
-                        "    \"message\": \"Sinopse é obrigatório\",\n" +
-                        "}")); // Match the plain text response
+            .put(Endpoint.FILME.getPath());
+
+        assertEquals(400, response.getStatusCode(), "Expected HTTP 400 Bad Request");
+        assertEquals("text/plain;charset=UTF-8", response.getContentType(), "Content type mismatch");
+        String expectedBody = "{\n" +
+                "    \"message\": \"Sinopse é obrigatório\",\n" +
+                "}";
+        assertEquals(expectedBody, response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
@@ -345,19 +354,20 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.success");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(200) // Expect HTTP 200 OK
-            .contentType(ContentType.JSON)
-            .body("nome", equalTo("Nome Atualizado"))
-            .body("genero", equalTo("Ação"))
-            .body("sinopse", equalTo("Sinopse Atualizada"))
-            .body("faixaEtaria", equalTo("16+"));
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals(ContentType.JSON.toString(), response.getContentType(), "Content type mismatch");
+        assertEquals("Nome Atualizado", response.jsonPath().getString("nome"), "Nome mismatch");
+        assertEquals("Ação", response.jsonPath().getString("genero"), "Genero mismatch");
+        assertEquals("Sinopse Atualizada", response.jsonPath().getString("sinopse"), "Sinopse mismatch");
+        assertEquals("16+", response.jsonPath().getString("faixaEtaria"), "Faixa Etaria mismatch");
     }
 
     @Test
@@ -365,16 +375,17 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.partial.update");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(200) // Expect HTTP 200 OK
-            .contentType(ContentType.JSON)
-            .body("nome", equalTo("Nome Parcialmente Atualizado"));
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals(ContentType.JSON.toString(), response.getContentType(), "Content type mismatch");
+        assertEquals("Nome Parcialmente Atualizado", response.jsonPath().getString("nome"), "Nome mismatch");
     }
 
     @Test
@@ -382,14 +393,15 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.not.found");
 
+        Response response =
         given()
             .pathParam("codigo", 999)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(500); // Expect HTTP 404 Not Found
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(500, response.getStatusCode(), "Expected HTTP 500 Internal Server Error");
     }
 
     @Test
@@ -397,15 +409,16 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.no.fields.to.update");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(200) // Expect HTTP 200 OK
-            .contentType(ContentType.JSON);
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals(ContentType.JSON.toString(), response.getContentType(), "Content type mismatch");
     }
 
     @Test
@@ -413,16 +426,17 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.update.genero.field");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(200) // Expect HTTP 200 OK
-            .contentType(ContentType.JSON)
-            .body("genero", equalTo("Comédia")); // Validate the updated genero field
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals(ContentType.JSON.toString(), response.getContentType(), "Content type mismatch");
+        assertEquals("Comédia", response.jsonPath().getString("genero"), "Genero mismatch");
     }
 
     @Test
@@ -430,16 +444,17 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.update.sinopse.field");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(200) // Expect HTTP 200 OK
-            .contentType(ContentType.JSON)
-            .body("sinopse", equalTo("Uma nova sinopse para o filme.")); // Validate the updated sinopse field
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals(ContentType.JSON.toString(), response.getContentType(), "Content type mismatch");
+        assertEquals("Uma nova sinopse para o filme.", response.jsonPath().getString("sinopse"), "Sinopse mismatch");
     }
 
     @Test
@@ -447,16 +462,17 @@ public class FilmeControllerTest {
 
         String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.update.faixa.etaria.field");
 
+        Response response =
         given()
             .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch(Endpoint.PATCH.getPath())
-        .then()
-            .statusCode(200) // Expect HTTP 200 OK
-            .contentType(ContentType.JSON)
-            .body("faixaEtaria", equalTo("40+")); // Validate the updated faixaEtaria field
+            .patch(Endpoint.PATCH.getPath());
+
+        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        assertEquals(ContentType.JSON.toString(), response.getContentType(), "Content type mismatch");
+        assertEquals("40+", response.jsonPath().getString("faixaEtaria"), "Faixa Etaria mismatch");
     }
 
 }
