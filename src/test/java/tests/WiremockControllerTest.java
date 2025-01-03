@@ -1,10 +1,10 @@
 package tests;
 
-import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import support.utils.RestAssuredConfig;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 public class WiremockControllerTest {
@@ -19,7 +19,7 @@ public class WiremockControllerTest {
     public void testConsultarIdFilmeExterno() {
         int codigo = 1;
 
-        RestAssured.given()
+        given()
             .pathParam("codigo", codigo)
         .when()
             .get("/idfilmeExterno/{codigo}")
@@ -32,7 +32,7 @@ public class WiremockControllerTest {
     public void testValidarHeaderWithValidHeader() {
         String validHeader = "12345678";
 
-        RestAssured.given()
+        given()
             .header("optional-header", validHeader)
         .when()
             .get("/validarHeader")
@@ -45,11 +45,11 @@ public class WiremockControllerTest {
     public void testValidarHeaderWithInvalidHeader() {
         String invalidHeader = "invalidHeader";
 
-        RestAssured.given()
-                .header("optional-header", invalidHeader)
-                .when()
-                .get("/validarHeader")
-                .then()
-                .statusCode(404);
+        given()
+            .header("optional-header", invalidHeader)
+        .when()
+            .get("/validarHeader")
+        .then()
+            .statusCode(404);
     }
 }
