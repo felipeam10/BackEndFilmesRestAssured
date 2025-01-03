@@ -2,6 +2,7 @@ package tests;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import support.enums.Endpoint;
 import support.utils.RestAssuredConfig;
 
 import static io.restassured.RestAssured.given;
@@ -22,7 +23,7 @@ public class WiremockControllerTest {
         given()
             .pathParam("codigo", codigo)
         .when()
-            .get("/idfilmeExterno/{codigo}")
+            .get(Endpoint.FILME_EXTERNO.getPath())
         .then()
             .statusCode(200)
             .body(equalTo("{\"id\":\"12345\"}")); // Match the plain text response
@@ -35,7 +36,7 @@ public class WiremockControllerTest {
         given()
             .header("optional-header", validHeader)
         .when()
-            .get("/validarHeader")
+            .get(Endpoint.VALIDAR_HEADER.getPath())
         .then()
                 .statusCode(200)
                 .body(equalTo("{\"mensagem\":\"Header válido\"}"));// Replace with the actual expected response body
@@ -48,7 +49,7 @@ public class WiremockControllerTest {
         given()
             .header("optional-header", invalidHeader)
         .when()
-            .get("/validarHeader")
+            .get(Endpoint.VALIDAR_HEADER.getPath())
         .then()
             .statusCode(404);
     }

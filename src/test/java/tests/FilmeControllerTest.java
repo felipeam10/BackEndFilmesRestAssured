@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import support.utils.BaseUrlSetup;
 import support.utils.RestAssuredConfig;
+import support.enums.Endpoint;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -24,7 +25,7 @@ public class FilmeControllerTest {
         given()
             .pathParam("codigo", codigoFilme)
         .when()
-            .get("/filme/{codigo}")
+            .get(Endpoint.FILME.getPath())
         .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
@@ -43,7 +44,7 @@ public class FilmeControllerTest {
         given()
             .pathParam("codigo", codigoFilmeInvalido)
         .when()
-            .get("/{codigo}")
+            .get(Endpoint.FILME.getPath())
         .then()
             .statusCode(404);
     }
@@ -53,7 +54,7 @@ public class FilmeControllerTest {
 
         given()
         .when()
-            .get("/filmes")
+            .get(Endpoint.FILMES.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON) // Expect JSON response
@@ -73,7 +74,7 @@ public class FilmeControllerTest {
         // Test for an invalid endpoint
         given()
         .when()
-            .get("/filmes-invalid") // Invalid endpoint
+            .get(Endpoint.FILMES_INVALID.getPath()) // Invalid endpoint
         .then()
             .statusCode(404); // Expect HTTP 404 Not Found
     }
@@ -87,7 +88,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post("/salvar")
+            .post(Endpoint.SALVAR.getPath())
         .then()
             .statusCode(201) // Expect HTTP 201 Created
             .contentType(ContentType.JSON) // Expect JSON response
@@ -104,7 +105,7 @@ public class FilmeControllerTest {
         given()
             .pathParam("codigo", 10)
         .when()
-            .delete("filme/{codigo}")
+            .delete(Endpoint.FILME.getPath())
         .then()
             .statusCode(200); // Expect HTTP 204 No Content
     }
@@ -119,7 +120,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post("/salvar")
+            .post(Endpoint.SALVAR.getPath())
         .then()
             .statusCode(409) // Expect HTTP 409 Conflict
             .contentType(ContentType.JSON) // Expect JSON response
@@ -135,7 +136,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post("/salvar")
+            .post(Endpoint.SALVAR.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -151,7 +152,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post("/salvar")
+            .post(Endpoint.SALVAR.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -167,7 +168,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post("/salvar")
+            .post(Endpoint.SALVAR.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -183,7 +184,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post("/salvar")
+            .post(Endpoint.SALVAR.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -196,7 +197,7 @@ public class FilmeControllerTest {
         given()
             .pathParam("codigo", 999)
         .when()
-            .delete("filme/{codigo}")
+            .delete(Endpoint.FILME.getPath())
         .then()
             .statusCode(404) // Expect HTTP 404 Not Found
             .contentType(ContentType.JSON) // Expect JSON response
@@ -213,7 +214,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put("filme/{codigo}")
+            .put(Endpoint.FILME.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -233,7 +234,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put("filme/{codigo}")
+            .put(Endpoint.FILME.getPath())
         .then()
             .statusCode(404) // Expect HTTP 404 Not Found
             .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -252,7 +253,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put("filme/{codigo}")
+            .put(Endpoint.FILME.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -271,7 +272,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put("filme/{codigo}")
+            .put(Endpoint.FILME.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -290,7 +291,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put("filme/{codigo}")
+            .put(Endpoint.FILME.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -309,7 +310,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .put("filme/{codigo}")
+            .put(Endpoint.FILME.getPath())
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -328,7 +329,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -348,7 +349,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -365,7 +366,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(500); // Expect HTTP 404 Not Found
     }
@@ -380,7 +381,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON);
@@ -396,7 +397,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -413,7 +414,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -430,7 +431,7 @@ public class FilmeControllerTest {
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .patch("/api/usuario/{codigo}")
+            .patch(Endpoint.PATCH.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)

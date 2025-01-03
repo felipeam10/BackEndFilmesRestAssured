@@ -3,6 +3,7 @@ package tests;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import support.enums.Endpoint;
 import support.utils.RestAssuredConfig;
 
 import static io.restassured.RestAssured.given;
@@ -21,7 +22,7 @@ public class StatusControllerTest {
         given()
             .contentType(ContentType.JSON)
         .when()
-            .get("/status")
+            .get(Endpoint.STATUS.getPath())
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.TEXT) // Validate the response content type
