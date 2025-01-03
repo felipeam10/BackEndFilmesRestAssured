@@ -25,14 +25,13 @@ public class BaseUrlSetup {
         return properties.getProperty(key);
     }
 
-    public static String setupBaseUrl(String propertiesFileName) {
+    public static String setupBaseUrl(String propertiesFileName, String key) {
         loadProperties(propertiesFileName);
-        String baseUrl = properties.getProperty("base.url");
+        String baseUrl = properties.getProperty(key);
         if (baseUrl != null) {
-            RestAssured.baseURI = baseUrl;
+            return baseUrl;
         } else {
-            throw new RuntimeException("base.url not found in the properties file");
+            throw new RuntimeException(key + " not found in the properties file");
         }
-        return baseUrl;
     }
 }

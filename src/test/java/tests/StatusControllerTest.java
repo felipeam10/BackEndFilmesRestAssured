@@ -1,28 +1,27 @@
 package tests;
 
-import config.TestConfig;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import support.utils.RestAssuredConfig;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class StatusControllerTest extends TestConfig {
-    @AfterEach
-    public void tearDown() {
-        // Reset the basePath after each test to avoid conflicts
-        resetBasePath();
+public class StatusControllerTest {
+
+    @BeforeAll
+    public static void setup() {
+        RestAssuredConfig.setup("homolog.properties", "base.url");
     }
 
     @Test
     public void testStatusApi() {
-        setBasePath("/status");
 
         given()
             .contentType(ContentType.JSON)
         .when()
-            .get()
+            .get("/status")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.TEXT) // Validate the response content type

@@ -1,9 +1,9 @@
 package tests;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import support.utils.RestAssuredConfig;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -11,10 +11,8 @@ public class WiremockControllerTest {
 
     @BeforeAll
     public static void setup() {
-        RestAssured.baseURI = "http://localhost:8091"; // Update to match your service's base URI
-        RestAssured.config = RestAssured.config()
-                .encoderConfig(RestAssured.config().getEncoderConfig().defaultContentCharset("UTF-8"))
-                .decoderConfig(RestAssured.config().getDecoderConfig().defaultContentCharset("UTF-8"));
+        // Use RestAssuredConfig to dynamically set the base URI from homolog.properties
+        RestAssuredConfig.setup("homolog.properties", "wiremock.base.url");
     }
 
     @Test

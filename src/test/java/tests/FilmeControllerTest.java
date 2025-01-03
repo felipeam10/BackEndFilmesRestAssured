@@ -11,11 +11,9 @@ import static org.hamcrest.Matchers.*;
 
 public class FilmeControllerTest {
 
-    private static String baseUrl;
-
     @BeforeAll
     public static void setup() {
-        RestAssuredConfig.setup();
+        RestAssuredConfig.setup("homolog.properties", "base.url");
     }
 
     @Test
