@@ -1,31 +1,32 @@
 package tests;
 
-import config.TestConfig;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import support.utils.BaseUrlSetup;
+import support.utils.RestAssuredConfig;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class FilmeControllerTest extends TestConfig {
+public class FilmeControllerTest {
 
-    @AfterEach
-    public void tearDown() {
-        // Reset the basePath after each test to avoid conflicts
-        resetBasePath();
+    private static String baseUrl;
+
+    @BeforeAll
+    public static void setup() {
+        RestAssuredConfig.setup();
     }
 
     @Test
     public void testConsultarFilmePorId_Success() {
-        setBasePath("/filme");
 
-        int codigoFilme = 1; // Replace with a valid movie ID
+        int codigoFilme = Integer.parseInt(BaseUrlSetup.getProperty("codigo.filme"));
 
         given()
             .pathParam("codigo", codigoFilme)
         .when()
-            .get("/{codigo}")
+            .get("/filme/{codigo}")
         .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
@@ -38,9 +39,8 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testConsultarFilmePorId_NotFound() {
-        setBasePath("/filme");
 
-        int codigoFilmeInvalido = 9999; // Replace with an invalid movie ID
+        int codigoFilmeInvalido = Integer.parseInt(BaseUrlSetup.getProperty("codigo.filmeInvalido"));
 
         given()
             .pathParam("codigo", codigoFilmeInvalido)
@@ -52,11 +52,10 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testConsultarTodosOsFilmes_Success() {
-        setBasePath("/filmes");
 
         given()
         .when()
-            .get()
+            .get("/filmes")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON) // Expect JSON response
@@ -72,36 +71,25 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testConsultarTodosOsFilmes_InvalidEndpoint() {
-        setBasePath("/filmes-invalid");
 
         // Test for an invalid endpoint
         given()
         .when()
-            .get() // Invalid endpoint
+            .get("/filmes-invalid") // Invalid endpoint
         .then()
             .statusCode(404); // Expect HTTP 404 Not Found
     }
 
     @Test
     public void testCriarFilme_Success() {
-        // Test for successfully creating a movie
-        setBasePath("/salvar");
 
-        String filmeJson = """
-            {
-                "codigo": 10,
-                "faixaEtaria": "12",
-                "genero": "Ação",
-                "nome": "Filme de Ação",
-                "sinopse": "Um filme emocionante de ação."
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("filme.success");
 
         given()
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post()
+            .post("/salvar")
         .then()
             .statusCode(201) // Expect HTTP 201 Created
             .contentType(ContentType.JSON) // Expect JSON response
@@ -113,26 +101,27 @@ public class FilmeControllerTest extends TestConfig {
     }
 
     @Test
-    public void testCriarFilme_Conflict() {
-        // Test for conflict when the movie already exists
-        setBasePath("/salvar");
+    public void testDeletarFilmePorId_Success() {
 
-        String filmeJson = """
-            {
-                "codigo": 1,
-                "faixaEtaria": "12",
-                "genero": "Ação",
-                "nome": "Filme de Ação",
-                "sinopse": "Um filme emocionante de ação."
-            }
-        """;
+        given()
+            .pathParam("codigo", 10)
+        .when()
+            .delete("filme/{codigo}")
+        .then()
+            .statusCode(200); // Expect HTTP 204 No Content
+    }
+
+    @Test
+    public void testCriarFilme_Conflict() {
+
+        String filmeJson = BaseUrlSetup.getProperty("filme.conflict");
 
         // Assuming the movie with codigo 1 already exists
         given()
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post()
+            .post("/salvar")
         .then()
             .statusCode(409) // Expect HTTP 409 Conflict
             .contentType(ContentType.JSON) // Expect JSON response
@@ -141,24 +130,14 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testCriarFilme_MissingFaixaEtaria() {
-        // Test for missing "faixaEtaria"
-        setBasePath("/salvar");
 
-        String filmeJson = """
-            {
-                "codigo": 12,
-                "faixaEtaria": "",
-                "genero": "Ação",
-                "nome": "Filme de Ação",
-                "sinopse": "Um filme emocionante de ação."
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("filme.sem.faixa.etaria");
 
         given()
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post()
+            .post("/salvar")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -167,24 +146,14 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testCriarFilme_MissingGenero() {
-        // Test for missing "genero"
-        setBasePath("/salvar");
 
-        String filmeJson = """
-            {
-                "codigo": 13,
-                "faixaEtaria": "1",
-                "genero": "",
-                "nome": "Filme de Ação",
-                "sinopse": "Um filme emocionante de ação."
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("filme.sem.genero");
 
         given()
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post()
+            .post("/salvar")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -193,24 +162,14 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testCriarFilme_MissingNome() {
-        // Test for missing "nome"
-        setBasePath("/salvar");
 
-        String filmeJson = """
-            {
-                "codigo": 14,
-                "faixaEtaria": "12",
-                "genero": "Ação",
-                "nome": "",
-                "sinopse": "Um filme emocionante de ação."
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("filme.sem.nome");
 
         given()
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post()
+            .post("/salvar")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -219,24 +178,14 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testCriarFilme_MissingSinopse() {
-        // Test for missing "sinopse"
-        setBasePath("/salvar");
 
-        String filmeJson = """
-            {
-                "codigo": 15,
-                "faixaEtaria": "12",
-                "genero": "Ação",
-                "nome": "Filme de Ação",
-                "sinopse": ""
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("filme.sem.sinopse");
 
         given()
             .contentType(ContentType.JSON)
             .body(filmeJson)
         .when()
-            .post()
+            .post("/salvar")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
             .contentType(ContentType.JSON) // Expect JSON response
@@ -244,31 +193,12 @@ public class FilmeControllerTest extends TestConfig {
     }
 
     @Test
-    public void testDeletarFilmePorId_Success() {
-        // Assuming a movie with codigo 1 exists in the database
-        setBasePath("/filme/{codigo}");
-
-        int codigo = 10;
-
-        given()
-            .pathParam("codigo", codigo)
-        .when()
-            .delete()
-        .then()
-            .statusCode(200); // Expect HTTP 204 No Content
-    }
-
-    @Test
     public void testDeletarFilmePorId_NotFound() {
         // Assuming a movie with codigo 999 does not exist in the database
-        setBasePath("/filme/{codigo}");
-
-        int codigo = 999;
-
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 999)
         .when()
-            .delete()
+            .delete("filme/{codigo}")
         .then()
             .statusCode(404) // Expect HTTP 404 Not Found
             .contentType(ContentType.JSON) // Expect JSON response
@@ -277,26 +207,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilme_Success() {
-        setBasePath("/filme/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-
-        String requestBody = """
-                {
-                    "codigo": 1,
-                    "nome": "Novo Nome do Filme",
-                    "sinopse": "Nova sinopse do filme",
-                    "genero": "Ação",
-                    "faixaEtaria": "16+"
-                }
-                """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.success");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .put()
+            .put("filme/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -308,26 +227,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilme_NotFound() {
-        setBasePath("/filme/{codigo}");
 
-        int codigo = 999; // Assuming a movie with this codigo does not exist
-
-        String requestBody = """
-                {
-                    "codigo": 999,
-                    "nome": "Filme Inexistente",
-                    "sinopse": "Sinopse inexistente",
-                    "genero": "Drama",
-                    "faixaEtaria": "18+"
-                }
-                """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.not.found");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 999)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .put()
+            .put("filme/{codigo}")
         .then()
             .statusCode(404) // Expect HTTP 404 Not Found
             .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -338,25 +246,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilme_MissingFaixaEtaria() {
-        setBasePath("/filme/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-
-        String requestBody = """
-                {
-                    "codigo": 1,
-                    "nome": "Filme Sem Faixa Etária",
-                    "sinopse": "Sinopse do filme",
-                    "genero": "Comédia"
-                }
-                """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.faixa.etaria");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .put()
+            .put("filme/{codigo}")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -367,25 +265,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilme_MissingGenero() {
-        setBasePath("/filme/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-
-        String requestBody = """
-                {
-                    "codigo": 1,
-                    "nome": "Filme Sem Gênero",
-                    "sinopse": "Sinopse do filme",
-                    "faixaEtaria": "12+"
-                }
-                """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.genero");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .put()
+            .put("filme/{codigo}")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -396,25 +284,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilme_MissingNome() {
-        setBasePath("/filme/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-
-        String requestBody = """
-                {
-                    "codigo": 1,
-                    "sinopse": "Sinopse do filme",
-                    "genero": "Terror",
-                    "faixaEtaria": "18+"
-                }
-                """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.nome");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .put()
+            .put("filme/{codigo}")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -425,25 +303,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilme_MissingSinopse() {
-        setBasePath("/filme/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-
-        String requestBody = """
-                {
-                    "codigo": 1,
-                    "nome": "Filme Sem Sinopse",
-                    "genero": "Aventura",
-                    "faixaEtaria": "10+"
-                }
-                """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.sem.sinopse");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .put()
+            .put("filme/{codigo}")
         .then()
             .statusCode(400) // Expect HTTP 400 Bad Request
                 .contentType("text/plain;charset=UTF-8") // Match the actual content type
@@ -454,24 +322,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilmeComPatch_Success() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-        String requestBody = """
-            {
-                "nome": "Nome Atualizado",
-                "genero": "Ação",
-                "sinopse": "Sinopse Atualizada",
-                "faixaEtaria": "16+"
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.success");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -483,21 +342,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilmeComPatch_PartialUpdate() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-        String requestBody = """
-            {
-                "nome": "Nome Parcialmente Atualizado"
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.partial.update");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -506,40 +359,30 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilmeComPatch_NotFound() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 999; // Assuming a movie with this codigo does not exist
-        String requestBody = """
-            {
-                "nome": "Filme Inexistente"
-            }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.not.found");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 999)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(500); // Expect HTTP 404 Not Found
-//            .contentType(ContentType.JSON)
-//            .body("message", equalTo("Filme não encontrado"));
     }
 
     @Test
     public void testEditarFilmeComPatch_NoFieldsToUpdate() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-        String requestBody = "{}"; // Empty request body
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.no.fields.to.update");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON);
@@ -547,21 +390,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilmeComPatch_UpdateGeneroField() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-        String requestBody = """
-        {
-            "genero": "Comédia"
-        }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.update.genero.field");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -570,21 +407,15 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilmeComPatch_UpdateSinopseField() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-        String requestBody = """
-        {
-            "sinopse": "Uma nova sinopse para o filme."
-        }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.update.sinopse.field");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
@@ -593,25 +424,19 @@ public class FilmeControllerTest extends TestConfig {
 
     @Test
     public void testEditarFilmeComPatch_UpdateFaixaEtariaField() {
-        setBasePath("/api/usuario/{codigo}");
 
-        int codigo = 1; // Assuming a movie with this codigo exists in the database
-        String requestBody = """
-        {
-            "faixaEtaria": "18+"
-        }
-        """;
+        String filmeJson = BaseUrlSetup.getProperty("editar.filme.com.path.update.faixa.etaria.field");
 
         given()
-            .pathParam("codigo", codigo)
+            .pathParam("codigo", 1)
             .contentType(ContentType.JSON)
-            .body(requestBody)
+            .body(filmeJson)
         .when()
-            .patch()
+            .patch("/api/usuario/{codigo}")
         .then()
             .statusCode(200) // Expect HTTP 200 OK
             .contentType(ContentType.JSON)
-            .body("faixaEtaria", equalTo("18+")); // Validate the updated faixaEtaria field
+            .body("faixaEtaria", equalTo("40+")); // Validate the updated faixaEtaria field
     }
 
 }
