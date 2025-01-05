@@ -3,9 +3,9 @@ package support.utils;
 import io.restassured.RestAssured;
 
 public class RestAssuredConfig {
-    public static void setup(String propertiesFileName, String baseUrlKey) {
+    public static void setup(String environment, String baseUrlKey) {
         // Load the base URL dynamically based on the key
-        String baseURI = BaseUrlSetup.setupBaseUrl(propertiesFileName, baseUrlKey);
+        String baseURI = BaseUrlSetup.setupBaseUrl(environment, baseUrlKey);
         if (baseURI != null) {
             RestAssured.baseURI = baseURI;
         } else {

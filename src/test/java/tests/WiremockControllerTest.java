@@ -14,8 +14,11 @@ public class WiremockControllerTest {
 
     @BeforeAll
     public static void setup() {
-        // Use RestAssuredConfig to dynamically set the base URI from homolog.properties
-        RestAssuredConfig.setup("homolog.properties", "wiremock.base.url");
+        String environment = System.getProperty("env");
+        if (environment == null || environment.isEmpty()) {
+            throw new RuntimeException("Environment not specified. Please provide the 'env' system property (e.g., -Denv=dev or -Denv=homolog).");
+        }
+        RestAssuredConfig.setup(environment, "wiremock.base.url");
     }
 
     @Test

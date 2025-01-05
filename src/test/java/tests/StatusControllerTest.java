@@ -14,7 +14,11 @@ public class StatusControllerTest {
 
     @BeforeAll
     public static void setup() {
-        RestAssuredConfig.setup("homolog.properties", "base.url");
+        String environment = System.getProperty("env");
+        if (environment == null || environment.isEmpty()) {
+            throw new RuntimeException("Environment not specified. Please provide the 'env' system property (e.g., -Denv=dev or -Denv=homolog).");
+        }
+        RestAssuredConfig.setup(environment, "base.url");
     }
 
     @Test
