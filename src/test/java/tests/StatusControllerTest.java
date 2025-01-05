@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import support.enums.Endpoint;
 import support.utils.RestAssuredConfig;
+import support.utils.RestAssuredHelper;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,15 +25,8 @@ public class StatusControllerTest {
     @Test
     public void testStatusApi() {
 
-        Response response =
-        given()
-            .contentType(ContentType.JSON)
-        .when()
-            .get(Endpoint.STATUS.getPath());
-
-        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
-        String actualContentType = response.getContentType();
-        assertEquals("text/plain", actualContentType.split(";")[0], "Content type mismatch");
+        Response response = RestAssuredHelper.sendGetRequest(Endpoint.STATUS.getPath());
+        RestAssuredHelper.assertResponse(response, 200, "text/plain");
         assertEquals("A aplicação está de pé", response.getBody().asString(), "Response body mismatch");
     }
 }

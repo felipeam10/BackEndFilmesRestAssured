@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import support.enums.Endpoint;
 import support.utils.RestAssuredConfig;
+import support.utils.RestAssuredHelper;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,37 +25,23 @@ public class WiremockControllerTest {
     @Test
     public void testConsultarIdFilmeExterno() {
 
-        Response response = given()
-                .pathParam("codigo", 1)
-                .when()
-                .get(Endpoint.FILME_EXTERNO.getPath());
-
-        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        Response response = RestAssuredHelper.sendGetRequest(Endpoint.FILME_EXTERNO.getPath(), "codigo", 1);
+        RestAssuredHelper.assertResponse(response, 200, null); // Skip Content-Type assertion
         assertEquals("{\"id\":\"12345\"}", response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
     public void testValidarHeaderWithValidHeader() {
 
-        Response response =
-       given()
-            .header("optional-header", "12345678")
-        .when()
-            .get(Endpoint.VALIDAR_HEADER.getPath());
-
-        assertEquals(200, response.getStatusCode(), "Expected HTTP 200 OK");
+        Response response = RestAssuredHelper.sendGetRequestWithHeader(Endpoint.VALIDAR_HEADER.getPath(),"optional-header","12345678");
+        RestAssuredHelper.assertResponse(response, 200, null);
         assertEquals("{\"mensagem\":\"Header válido\"}", response.getBody().asString(), "Response body mismatch");
     }
 
     @Test
     public void testValidarHeaderWithInvalidHeader() {
 
-        Response response =
-        given()
-            .header("optional-header", "invalidHeader")
-        .when()
-            .get(Endpoint.VALIDAR_HEADER.getPath());
-
-        assertEquals(404, response.getStatusCode(), "Expected HTTP 404 Not Found");
+        Response response = RestAssuredHelper.sendGetRequestWithHeader(Endpoint.VALIDAR_HEADER.getPath(),"optional-header","invalidHeader");
+        RestAssuredHelper.assertResponse(response, 404, null); // Skip Content-Type assertion for 404
     }
 }
