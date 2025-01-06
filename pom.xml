@@ -28,6 +28,7 @@
 	</scm>
 
 	<properties>
+		<spring-boot-maven-plugin.version>2.7.3</spring-boot-maven-plugin.version>
 		<java.version>11</java.version>
 		<rest-assured.version>5.3.0</rest-assured.version>
 		<junit-jupiter.version>5.10.0</junit-jupiter.version>
@@ -40,6 +41,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>${spring-boot-maven-plugin.version}</version>
 		</dependency>
 
 		<dependency>
