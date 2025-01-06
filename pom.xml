@@ -30,6 +30,8 @@
 	<properties>
 		<spring-boot-maven-plugin.version>2.7.3</spring-boot-maven-plugin.version>
 		<java.version>11</java.version>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
 		<rest-assured.version>5.3.0</rest-assured.version>
 		<junit-jupiter.version>5.10.0</junit-jupiter.version>
 		<junit-platform.version>1.10.0</junit-platform.version>
