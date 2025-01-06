@@ -29,12 +29,12 @@ For it to run, you need to have Java 11 initially and then Docker installed on y
 
 4. Build the project: `mvn clean install`
 
-5. Running tests: `mvn test`
+5. Running tests: `mvn test -Denv=homolog` or `mvn test -Denv=dev`
 
 ### How to generate surefire-report
 
-1. After running your tests with `mvn test`
-2. Run the command `mvn surefire-report:report`
+1. After running your tests with `mvn test -Denv=homolog` or `mvn test -Denv=dev`
+2. Run the command `mvn test surefire-report:report -Denv=homolog` or `mvn test surefire-report:report -Denv=dev`
 3. This will generate an HTML report in the following directory: `target/site/surefire-report.html`
 
 [Return to Index](#index)
