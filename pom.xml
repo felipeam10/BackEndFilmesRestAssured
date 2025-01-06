@@ -14,19 +14,6 @@
 	<name>BackEndFilmesRestAssured</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
-
 	<properties>
 <!--		<spring-boot-maven-plugin.version>2.7.3</spring-boot-maven-plugin.version>-->
 		<java.version>11</java.version>
