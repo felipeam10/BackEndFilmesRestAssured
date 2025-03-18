@@ -10,10 +10,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RestAssuredHelper {
 
-    public static void setup(String propertiesFile, String baseUrlKey) {
-        RestAssuredConfig.setup(propertiesFile, baseUrlKey);
-    }
-
     // Method for GET requests without path parameters
     public static Response sendGetRequest(String endpoint) {
         return given()
